@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid page-container" id="login-signup-container">
+    <div class="row">
+        <div class="col s12 m8 offset-m2 l6 offset-l3">
+            <div class="card s12" id="login-signup-card">
+                <div class="card-content">
+                    <div class="grey-border">
+                        <h4 class="center uppercase spaced-text header-blue"><strong>Log In</strong></h4>
+                        <div class="row">
+                            <div class="col s10 offset-s1">
+                                <form action="{{ url_for('login_auth') }}" method="POST" id="login-form">
+                                    <div class="row">
+                                        <div class="input-field col s12 m10 offset-m1 l8 offset-l2">
+                                            <input class="white validate" placeholder="Username" id="username" name="username" type="text" required>
+                                            <span class="helper-text spaced-text" data-error="Enter your username" data-success="Username">Username</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 m10 offset-m1 l8 offset-l2">
+                                            <input class="white validate" placeholder="Password" id="password" name="password" type="password" required>
+                                            <span class="helper-text spaced-text" data-error="Please enter your Password" data-success="Password">Password</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col s12 center">
+                                            <button class="btn waves-effect waves-light blue-btn" type="submit" id="login-signup-btn" name="action"><strong>Log In</strong></button>
+                                            <p class="header-blue-darker">Don't have an account yet? <a href="{{ url_for('signup') }}"><strong class="header-blue-lighter card-link">Sign Up!</strong></a></p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% block include_js_html %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
+{% endblock %}

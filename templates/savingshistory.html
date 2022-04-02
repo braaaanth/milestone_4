@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid page-container" id="history-container">
+`   <!--Fab Menu-->
+    <div class="fixed-action-btn hide-on-small-only" id="cards-fab">
+        <a class="btn-floating horizontal btn-large red" id="cards-fab-main-btn"><i class="large material-icons">dashboard</i></a>
+        <ul id="goal-fab-ul">
+        {% if (goals | length) < 4%}
+        <li>
+            <a class="btn-floating darken-1 goal-fab-card" href="{{ url_for('dashboard', username=user.username, add_goal='add') }}"><i class="material-icons">add</i></a>
+        </li>
+        {% endif %} {% for goal in goals %}
+        <li>
+            <a class="btn-floating darken-1 goal-fab-card" href="{{ url_for('goal_view', username=user.username, goal_id=goal._id) }}" style="background-image: url({{ goal.image_url }})"></a>
+        </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="row">
+    <div class="col s12 m8 offset-m2 l6 offset-l3">
+        {% if user.deposits_number > 0 %}
+        <div class="card">
+            <div class="card-content center blue-text">
+                <h4 class="center uppercase spaced-text header-blue print-transform"><strong>Savings History</strong></h4>
+                {% if historytype == "goal" %}
+                <h4 class="spaced-text header-blue" style="margin-bottom: 30px"><strong>{{ goal.goal_name }}</strong></h4>
+                {% endif %}
+                <h6 class="uppercase spaced-text header-blue print-transform">{{ user.fname }} {{ user.lname }}</h6>
+                <br />
+                <span id="print-history-btn"><i class="material-icons header-blue-lighter card-link">print</i></span>
+                <br />
+                <span><a href="{{ url_for('dashboard', username=user.username) }}" class="center header-blue-lighter card-link"><strong>Back to Dashboard</strong></a></span>
+                <!--Savings History Table-->
+                <div class="grey-border">
+                    <table class="highlight">
+                    {% if historytype == "user" %}
+                    <thead>
+                    <tr>
+                        <th class="uppercase spaced-text print-transform header-blue">Amount</th>
+                        <th class="uppercase center spaced-text print-transform header-blue">Goal</th>
+                        <th class="uppercase right spaced-text print-transform header-blue">Date</th>
+                    </tr>
+                    </thead>
+                    {% else %}
+                        <thead>
+                        <tr>
+                            <th class="uppercase spaced-text header-blue">Amount</th>
+                            <th class="uppercase right spaced-text header-blue">Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in goal.savings_history | sort(reverse=true) %} <!--reverse item order as can only push to mongodb array -->
+                        <tr>
+                            {% if item[1] > 0 %}
+                            <td class="table-deposit header-green">
+                                <h6><i class="material-icons tiny">arrow_upward</i><strong class="deposits-main-figure">{{ user.currency }}{{ "{:,.2f}".format(item[1]) }}</strong></h6>
+                            </td>
+                            {% else %}
+                            <td class="table-withdrawal header-red">
+                                <h6><i class="material-icons tiny">arrow_downward</i><strong class="withdrawals-main-figure">{{ user.currency}}{{ "{:,.2f}".format(0 - item[1]) }}</strong><h6>
+                            </td>
+                            {% endif %}
+                            <td class="right header-blue"><strong>{{ item[0].strftime("%d %b, %Y") }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        </table>
+                        {% endif %}
+                    <tbody>
+                    {% for item in user_savings_history | sort(reverse=true) %} <!--reverse item order as can only push to mongodb array -->
+                    <tr>
+                        {% if item[1] > 0 %}
+                        <td class="table-deposit header-green print-transform">
+                            <i class="material-icons tiny">arrow_upward</i><strong class="deposits-main-figure">{{ user.currency }}{{ "{:,.2f}".format(item[1]) }}</strong>
+                        </td>
+                        {% else %}
+                        <td class="table-withdrawal header-red print-transform">
+                            <i class="material-icons tiny">arrow_downward</i><strong class="withdrawals-main-figure">{{ user.currency }}{{ "{:,.2f}".format(0 - item[1]) }}</strong>
+                        </td>
+                        {% endif %}
+                        <td class="center header-blue print-transform">{{ item[2] }}</td>
+                        <td class="right header-blue print-transform">{{ item[0].strftime("%d %b, %Y") }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+            </div> 
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</div>
+{% endblock %}
+{% block include_js_html %}
+<script src="{{ url_for('static', filename='js/savingshistory.js') }}"></script>
+{% endblock %}

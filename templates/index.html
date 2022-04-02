@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+  <div class="carousel carousel-slider center">
+    <div class="carousel-fixed-item center">
+        {% if user %}
+            <a class="waves-effect waves-light btn jumbotron-btn white blue-text header-blue" href="{{ url_for('dashboard', username=user.username) }}"><strong>Dashboard</strong></a>
+            <a class="waves-effect waves-light btn jumbotron-btn white blue-text header-blue" href="{{ url_for('profile', username=user.username) }}"><strong>Profile</strong></a>
+        {% else %}
+        <a class="waves-effect waves-light btn jumbotron-btn white header-blue" href="{{ url_for('signup') }}"><strong>Sign up</strong></a>
+        <a class="waves-effect waves-light btn jumbotron-btn white header-blue" href="{{ url_for('login') }}"><strong>Log In</strong></a>
+        {% endif %}
+    </div>
+    <div class="carousel-item" id="index-carousel-one" href="#one!">
+        <div class="row white carousel-banner">
+            <div class="col s12">
+                <h4 class="spaced-text header-blue banner-heading uppercase"><strong>{{ "{:,}".format(app_stats.users_total)}} savers use track</strong></h4>
+                {% if user %}
+                <h5 class="header-blue uppercase spaced-text">We'd only be <strong>{{ "{:,}".format(app_stats.users_total - 1)}}</strong> without you!</h5>
+                {% else %}
+                <h5 class="header-blue uppercase spaced-text">We'd love you to make it <strong>{{ "{:,}".format(app_stats.users_total + 1)}}</strong></h5>
+                {% endif %}
+            </div>     
+        </div>
+    </div>
+    <div class="carousel-item " id="index-carousel-two" href="#two!">
+        <div class="row white carousel-banner">
+            <div class="col s12">
+                <h4 class="spaced-text header-blue banner-heading uppercase"><strong>{% if user %}{{ user.currency}}{% else %}£{% endif %}{{ "{:,}".format(app_stats.saved_total | int) }} saved so far</strong></h4>
+                {% if user %}
+                {% if user.total_currently_saved > 0 %}
+                <h5 class="header-blue uppercase spaced-text">{{ user.currency}}{{ "{:,}".format(user.total_currently_saved | int) }} of this is yours!</h5>
+                {% else %}
+                <h5 class="header-blue uppercase spaced-text">Start saving towards a new goal to be a part of it</h5>
+                {% endif %}
+                {% else %}
+                <h5 class="header-blue uppercase spaced-text">How much could you save?</h5>
+                {% endif %}
+            </div>     
+        </div>
+    </div>
+    <div class="carousel-item" id="index-carousel-three" href="#three!">
+       <div class="row white carousel-banner">
+            <div class="col s12">
+                <h4 class="spaced-text header-blue banner-heading uppercase"><strong>{{ "{:,}".format(app_stats.achieved_goals)}} goals achieved with track</strong></h4>
+                {% if user %}
+                    {% if (user.goals_achieved | length) == 0 %}
+                        {% if user.deposts_number %}
+                        <h5 class="header-blue uppercase spaced-text">Keep saving and soon it will be {{ "{:,}".format(app_stats.achieved_goals + 1)}}</h5>
+                        {% else %}
+                        <h5 class="header-blue uppercase spaced-text">Start saving and soon it will be {{ "{:,}".format(app_stats.achieved_goals + 1)}}</h5>
+                        {% endif %}
+                     {% elif (user.goals_achieved | length) == 1 %}
+                      <h5 class="header-blue uppercase spaced-text">And one of them is yours! </h5>
+                     {% else %}
+                     <h5 class="header-blue uppercase spaced-text">And {{ user.goals_achieved | length }} of them are yours! </h5>
+                    {% endif %}
+                {% else %}
+                <h5 class="header-blue uppercase spaced-text">Track can help you achieve yours too </h5>
+                {% endif %}
+            </div>     
+        </div>
+    </div>
+  </div>
+  {% if not user %}
+  <div class="row" id="index-cards-row"> 
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-signup.jpg" alt="signup page on a laptop">
+        </div>
+        <div class="card-content index-card-content">
+            <span class="card-title header-blue"><strong>1. Sign Up</strong></span>
+            <p class="blue-grey-text text-darken-1">It only takes on simple form to sign up to track and start saving towards your goals. You'll be able to create goals straight away.</p>
+        </div>
+        <div class="card-action">
+            <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('signup') }}"><strong>Sign Up</strong></a>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-save.jpg" alt="goal's savings page on a tablet">
+        </div>
+        <div class="card-content index-card-content">
+            <span class="card-title header-blue"><strong>2. Track Savings</strong></span>
+            <p class="blue-grey-text text-darken-1">Track your savings and watch them progress towards your target. You'll get savings insights after your first deposit.</p>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('login') }}"><strong>Log In</strong></a>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-complete.jpg" alt="achieved goal on a phone screen">
+        </div>
+        <div class="card-content index-card-content">
+        <span class="card-title header-blue"><strong>3. Achieve Goals</strong></span>
+        <p class="blue-grey-text text-darken-1">We don't think it will be long until you achieve your first goal! You'll be able to look back over your savings history too.</p>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('signup') }}"><strong>Get Started</strong></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row" id="index-cards-row"> 
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-dash.jpg" alt="users dashboard on a tablet">
+        </div>
+        <div class="card-content index-card-content">
+            <span class="card-title header-blue"><strong>Dashboard</strong></span>
+            <p class="blue-grey-text text-darken-1">See how much you've saved so far, add new goals, view your recent history and achieved goals.</p>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('profile', username=user.username) }}"><strong>Dashboard</strong></a>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-profile.jpg" alt="users profile on a laptop">
+        </div>
+        <div class="card-content index-card-content">
+            <span class="card-title header-blue"><strong>Profile</strong></span>
+            <p class="blue-grey-text text-darken-1">View your profile - make sure your profile details and password are up to date.</p>
+        </div>
+        <div class="card-action">
+            <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('profile', username=user.username) }}"><strong>Profile</strong></a>
+        </div>
+      </div>
+    </div>
+    <div class="col s12 m4">
+      <div class="card">
+        <div class="card-image">
+          <img src="/static/img/index-mockup-history.jpg" alt="savings history on a phone screen">
+        </div>
+        <div class="card-content index-card-content">
+        <span class="card-title header-blue"><strong>Savings History</strong></span>
+        <p class="blue-grey-text text-darken-1">Keep track of your savings history for all your goals in one place. </p>
+        </div>
+        <div class="card-action">
+          <a class="waves-effect waves-light btn jumbotron-btn blue-btn" href="{{ url_for('savingshistory', username=user.username ) }}"><strong>Savings History</strong></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
